@@ -400,15 +400,20 @@ class DivByConstOp(Op):
 class TransposeOp(Op):
     """Op to transpose a matrix."""
 
-    def __call__(self, node_A: Node) -> Node:
+    def __call__(self, node_A: Node, dim0: int, dim1: int) -> Node:
         return Node(
             inputs=[node_A],
             op=self,
-            name=f"({node_A.name})ᵀ",
+            attrs={"dim0": dim0, "dim1": dim1},
+            name=f"transpose({node_A.name}, {dim0}, {dim1})",
         )
 
     def compute(self, node: Node, input_values: List[torch.Tensor]) -> torch.Tensor:
-        """Return the transpose of the input."""
+        """Return the transpose of the input by swapping two dimensions.
+        
+        For example:
+        - transpose(x, 1, 0) swaps first two dimensions
+        """
         assert len(input_values) == 1
         """TODO: your code here"""
 
