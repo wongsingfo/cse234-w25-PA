@@ -420,7 +420,7 @@ class MatMulOp(Op):
     """Matrix multiplication op of two nodes."""
 
     def __call__(
-        self, node_A: Node, node_B: Node, trans_A: bool = False, trans_B: bool = False
+        self, node_A: Node, node_B: Node
     ) -> Node:
         """Create a matrix multiplication node.
 
@@ -430,10 +430,6 @@ class MatMulOp(Op):
             The lhs matrix.
         node_B: Node
             The rhs matrix
-        trans_A: bool
-            A boolean flag denoting whether to transpose A before multiplication.
-        trans_B: bool
-            A boolean flag denoting whether to transpose B before multiplication.
 
         Returns
         -------
