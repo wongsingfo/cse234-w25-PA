@@ -299,7 +299,12 @@ class OnesLikeOp(Op):
         return [zeros_like(node.inputs[0])]
 
 class SumOp(Op):
-    """Op to compute sum along specified dimensions."""
+    """
+    Op to compute sum along specified dimensions.
+    
+    Note: This is a reference implementation for SumOp.
+        If it does not work in your case, you can modify it.
+    """
 
     def __call__(self, node_A: Node, dim: tuple, keepdim: bool = False) -> Node:
         return Node(
@@ -324,7 +329,11 @@ class SumOp(Op):
             return [reshape_grad]
 
 class ExpandAsOp(Op):
-    """Op to broadcast a tensor to the shape of another tensor."""
+    """Op to broadcast a tensor to the shape of another tensor.
+    
+    Note: This is a reference implementation for ExpandAsOp.
+        If it does not work in your case, you can modify it.
+    """
 
     def __call__(self, node_A: Node, node_B: Node) -> Node:
         return Node(
@@ -345,7 +354,11 @@ class ExpandAsOp(Op):
         return [sum_op(output_grad,dim=0), zeros_like(output_grad)]
     
 class ExpandAsOp3d(Op):
-    """Op to broadcast a tensor to the shape of another tensor."""
+    """Op to broadcast a tensor to the shape of another tensor.
+    
+    Note: This is a reference implementation for ExpandAsOp3d.
+        If it does not work in your case, you can modify it.
+    """
 
     def __call__(self, node_A: Node, node_B: Node) -> Node:
         return Node(
@@ -626,7 +639,11 @@ class PowerOp(Op):
         """TODO: your code here"""
 
 class MeanOp(Op):
-    """Op to compute mean along specified dimensions."""
+    """Op to compute mean along specified dimensions.
+    
+    Note: This is a reference implementation for MeanOp.
+        If it does not work in your case, you can modify it.
+    """
 
     def __call__(self, node_A: Node, dim: tuple, keepdim: bool = False) -> Node:
         return Node(
