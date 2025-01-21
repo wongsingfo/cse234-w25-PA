@@ -323,8 +323,6 @@ class SumOp(Op):
             reshape_grad = expand_as_3d(output_grad, node.inputs[0])
             return [reshape_grad]
 
-        return [output_grad]
-
 class ExpandAsOp(Op):
     """Op to broadcast a tensor to the shape of another tensor."""
 
