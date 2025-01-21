@@ -595,6 +595,7 @@ sqrt = SqrtOp()
 power = PowerOp()
 greater = GreaterThanOp()
 sub = SubOp()
+broadcast = BroadcastOp()
 
 def topological_sort(nodes):
     """Helper function to perform topological sort on nodes.
