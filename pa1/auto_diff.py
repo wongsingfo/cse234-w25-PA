@@ -640,9 +640,6 @@ class PowerOp(Op):
 
 class MeanOp(Op):
     """Op to compute mean along specified dimensions.
-    
-    Note: This is a reference implementation for MeanOp.
-        If it does not work in your case, you can modify it.
     """
 
     def __call__(self, node_A: Node, dim: tuple, keepdim: bool = False) -> Node:
