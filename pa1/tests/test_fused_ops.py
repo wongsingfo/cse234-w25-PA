@@ -33,10 +33,10 @@ def test_matmul_layernorm_forward():
     x2 = ad.Variable("x2")
     
     # Create computation graphs for both fused and separate ops
-    fused_y = matmul_layernorm(x1, x2, normalized_shape=[-1])
+    fused_y = matmul_layernorm(x1, x2, normalized_shape=[3])
     separate_y = ad.layernorm(
         ad.matmul(x1, x2),
-        normalized_shape=[-1]
+        normalized_shape=[3]
     )
 
     # Test input values
@@ -57,10 +57,10 @@ def test_matmul_layernorm_backward():
     x2 = ad.Variable("x2")
     
     # Create computation graphs for both fused and separate ops
-    fused_y = matmul_layernorm(x1, x2, normalized_shape=[-1])
+    fused_y = matmul_layernorm(x1, x2, normalized_shape=[3])
     separate_y = ad.layernorm(
         ad.matmul(x1, x2),
-        normalized_shape=[-1]
+        normalized_shape=[3]
     )
     
     y_grad = ad.Variable("y_grad")

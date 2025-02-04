@@ -148,7 +148,7 @@ def test_matmul_3d():
 
 def test_layernorm():
     x = ad.Variable("x")
-    y = ad.layernorm(x, normalized_shape=[-1])
+    y = ad.layernorm(x, normalized_shape=[3])
     y_grad = ad.Variable("y_grad")
     x_grad = y.op.gradient(y, y_grad)[0]
     evaluator = ad.Evaluator(eval_nodes=[x_grad])

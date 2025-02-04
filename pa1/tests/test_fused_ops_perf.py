@@ -69,7 +69,7 @@ def run_benchmark(test_case: TestCase) -> None:
 
         # Test LayerNorm fusion
         print("\nTesting MatMul + LayerNorm:")
-        normalized_shape = [-1]
+        normalized_shape = [grad_shape[-1]]
         
         # Create computation graphs
         fused_y = matmul_layernorm(node_x1, node_x2, normalized_shape=normalized_shape)
