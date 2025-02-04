@@ -114,7 +114,7 @@ def test_matmul_3d():
 
 def test_layernorm():
     x = ad.Variable("x")
-    y = ad.layernorm(x, normalized_shape=[3])
+    y = ad.layernorm(x, normalized_shape=[-1])
 
     check_compute_output(
         y,
