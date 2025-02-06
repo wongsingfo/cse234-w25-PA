@@ -282,7 +282,6 @@ if __name__ == "__main__":
     test_matmul_3d()
     test_transpose()
     test_broadcast()
-    test_mean()
     test_sqrt()
     test_power()
 
