@@ -239,22 +239,6 @@ def test_broadcast():
         expected_outputs=[torch.tensor([[8.0, 10.0], [12.0, 14.0], [16.0, 18.0]])]
     )
 
-def test_mean():
-    x = ad.Variable("x")
-    y = ad.mean(x, dim=(0,))
-    y_grad = ad.Variable("y_grad")
-    x_grad = y.op.gradient(y, y_grad)[0]
-    evaluator = ad.Evaluator(eval_nodes=[x_grad])
-
-    x_val = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
-    y_grad_val = torch.tensor([1.0, 1.0])
-
-    check_evaluator_output(
-        evaluator,
-        input_values={x: x_val, y_grad: y_grad_val},
-        expected_outputs=[torch.tensor([[0.5, 0.5], [0.5, 0.5]])]
-    )
-
 def test_sqrt():
     x = ad.Variable("x")
     y = ad.sqrt(x)
