@@ -239,12 +239,66 @@ def test_broadcast():
         expected_outputs=[torch.tensor([[8.0, 10.0], [12.0, 14.0], [16.0, 18.0]])]
     )
 
+def test_mean():
+    x = ad.Variable("x")
+    y = ad.mean(x, dim=(0,))
+    y_grad = ad.Variable("y_grad")
+    x_grad = y.op.gradient(y, y_grad)[0]
+    evaluator = ad.Evaluator(eval_nodes=[x_grad])
+
+    x_val = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+    y_grad_val = torch.tensor([1.0, 1.0])
+
+    check_evaluator_output(
+        evaluator,
+        input_values={x: x_val, y_grad: y_grad_val},
+        expected_outputs=[torch.tensor([[0.5, 0.5], [0.5, 0.5]])]
+    )
+
+def test_sqrt():
+    x = ad.Variable("x")
+    y = ad.sqrt(x)
+    y_grad = ad.Variable("y_grad")
+    x_grad = y.op.gradient(y, y_grad)[0]
+    evaluator = ad.Evaluator(eval_nodes=[x_grad])
+
+    x_val = torch.tensor([[4.0, 9.0], [16.0, 25.0]])
+    y_grad_val = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+
+    check_evaluator_output(
+        evaluator,
+        input_values={x: x_val, y_grad: y_grad_val},
+        expected_outputs=[torch.tensor([[0.25, 0.33333], [0.375, 0.4]])]
+    )
+
+def test_power():
+    x = ad.Variable("x")
+    y = ad.power(x, 2)
+    y_grad = ad.Variable("y_grad")
+    x_grad = y.op.gradient(y, y_grad)[0]
+    evaluator = ad.Evaluator(eval_nodes=[x_grad])
+
+    x_val = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+    y_grad_val = torch.tensor([[1.0, 1.0], [1.0, 1.0]])
+
+    check_evaluator_output(
+        evaluator,
+        input_values={x: x_val, y_grad: y_grad_val},
+        expected_outputs=[torch.tensor([[2.0, 4.0], [6.0, 8.0]])]
+    )
+
 if __name__ == "__main__":
     test_mul()
     test_div()
+    test_div_by_const()
     test_layernorm()
     test_relu() 
     test_softmax()
     test_matmul()
+    test_matmul_3d()
     test_transpose()
     test_broadcast()
+    test_mean()
+    test_sqrt()
+    test_power()
+
