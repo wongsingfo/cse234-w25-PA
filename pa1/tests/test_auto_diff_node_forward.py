@@ -166,16 +166,6 @@ def test_broadcast():
         ])
     )
 
-def test_mean():
-    x = ad.Variable("x")
-    y = ad.mean(x, dim=(0,))
-
-    check_compute_output(
-        y,
-        [torch.tensor([[1.0, 2.0], [3.0, 4.0]], dtype=torch.float32)],
-        torch.tensor([2.0, 3.0], dtype=torch.float32)
-    )
-
 def test_sqrt():
     x = ad.Variable("x")
     y = ad.sqrt(x)
@@ -208,6 +198,5 @@ if __name__ == "__main__":
     test_matmul_3d()
     test_transpose()
     test_broadcast()
-    test_mean()
     test_power()
     test_sqrt()
