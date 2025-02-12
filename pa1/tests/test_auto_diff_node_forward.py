@@ -166,6 +166,25 @@ def test_broadcast():
         ])
     )
 
+def test_sqrt():
+    x = ad.Variable("x")
+    y = ad.sqrt(x)
+
+    check_compute_output(
+        y,
+        [torch.tensor([[4.0, 9.0], [16.0, 25.0]], dtype=torch.float32)],
+        torch.tensor([[2.0, 3.0], [4.0, 5.0]], dtype=torch.float32)
+    )
+
+def test_power():
+    x = ad.Variable("x")
+    y = ad.power(x, 2)
+
+    check_compute_output(
+        y,
+        [torch.tensor([[1.0, 2.0], [3.0, 4.0]], dtype=torch.float32)],
+        torch.tensor([[1.0, 4.0], [9.0, 16.0]], dtype=torch.float32)
+    )
 
 if __name__ == "__main__":
     test_mul()
@@ -179,3 +198,5 @@ if __name__ == "__main__":
     test_matmul_3d()
     test_transpose()
     test_broadcast()
+    test_power()
+    test_sqrt()
