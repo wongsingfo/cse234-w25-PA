@@ -11,7 +11,7 @@ You may work with groups of up to 3 on this assignment and submit your assignmen
 ## Part 1: Matmul Kernel Optimization (40 pts + extra credit :D)
 The file you must complete in this part is `matmul_triton.ipynb`. You will find detailed TODOs in this file as well as an overview in the writeup below.
 
-In this part of the assignment, you will implement Triton-based implementation of a matrix multiplication + ReLU + add kernel. The kernel computes the matrix function **D = C + ReLU(A × B)** where **A** is of shape *(M, K)*, **B** is of shape *(K, N)*, and **C & D** are of shape *(M, N)*. We will break the kernel down into four main steps:
+In this part of the assignment, you will implement Triton-based implementation of a matrix multiplication + ReLU + add kernel. The kernel computes the matrix function **D = ReLU(A × B + C)** where **A** is of shape *(M, K)*, **B** is of shape *(K, N)*, and **C & D** are of shape *(M, N)*. We will break the kernel down into four main steps:
 
 1. **Tile Assignment**  
 2. **Shared Memory Tiling + Cooperative Fetching**  
@@ -47,9 +47,9 @@ Some things to keep in mind:
 After accumulation you can optionally choose to fuse an activation function (like leaky ReLU) - this is used in practice to make architectures that use lots of matmuls and activation functions together (like transformers) much much faster!
 
 ### 1.4 Add and ReLU Fusion
-In this step, we fuse the ReLU activation and the element-wise addition of matrix C directly into the matmul kernel to optimize performance by reducing memory traffic and kernel launch overhead. After computing the matrix multiplication and storing the results in the accumulator, you must apply the ReLU function using an element-wise maximum operation to set all negative values to zero. 
+In this step, we fuse the element-wise addition of matrix C and the final ReLU activation directly into the matmul kernel to optimize performance by reducing memory traffic and kernel launch overhead. After computing the matrix multiplication and storing the results in the accumulator, you must load the corresponding tile from matrix C and add it element-wise to the activated accumulator. Then apply the ReLU function using an element-wise maximum operation to set all negative values to zero. 
 
-Immediately following this, we load the corresponding tile from matrix C and add it element-wise to the activated accumulator. This fusion of operations avoids writing intermediate results back to global memory and then reloading them for further processing, minimizing latency and making more efficient use of the GPU’s memory hierarchy.
+This fusion of operations avoids writing intermediate results back to global memory and then reloading them for further processing, minimizing latency and making more efficient use of the GPU’s memory hierarchy.
 
 ### 1.5 Write Cache/Epilogue
 In this step, we write the tile of C back to global memory. This final step ensures that the computed results are stored in the correct locations in the output matrix C. Be sure to also use a mask to prevent invalid indices from being written to. (Use `tl.store` to store your tiles.)
@@ -66,7 +66,7 @@ This entire section combined will be 40 points total. We will grade you on compl
 - 1.25x speedup: 45 / 40 points
 - 1.4x speedup: 50 / 40 points
 
-Please make sure to test on the GPUs that we have mentioned here. Speedup is much much different on different GPUs! **AND DO NOT CHANGE THE CODE** in the performance benchmark section of the notebook. We are only testing on 2048x2048 fp16 matmul, with 5000 iterations.
+Please make sure to test on the GPUs that we have mentioned here. Speedup is much much different on different GPUs! **AND DO NOT CHANGE THE CODE** in the performance benchmark section of the notebook. We are only testing on 2048x2048 fp16 matmul + add + relu, with 5000 iterations.
 
 ## Part 2: Tensor Parallel Communication (60 pts)
 
