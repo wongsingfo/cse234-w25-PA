@@ -108,8 +108,8 @@ conda activate cse234pa2
 ```
 Now you should be able to install the requirements.txt
 ```bash
-git clone 
-cd 
+git clone https://github.com/hao-ai-lab/cse234-w25-PA
+cd cse234-w25-PA/pa2
 pip install -r requirements.txt
 ```
 
@@ -119,8 +119,8 @@ pip install -r requirements.txt
 With your environment active you can clone the repo and install the dependencies:
 
 ```bash
-git clone https://github.com/hao-ai-lab/cse234-PA
-cd pa2
+git clone https://github.com/hao-ai-lab/cse234-w25-PA
+cd cse234-w25-PA/pa2
 pip install -r requirements.txt
 ```
 
