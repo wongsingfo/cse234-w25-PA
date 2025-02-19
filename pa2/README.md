@@ -55,7 +55,7 @@ This fusion of operations avoids writing intermediate results back to global mem
 In this step, we write the tile of C back to global memory. This final step ensures that the computed results are stored in the correct locations in the output matrix C. Be sure to also use a mask to prevent invalid indices from being written to. (Use `tl.store` to store your tiles.)
 
 ### 1.6 Grid Search
-To achieve full credit on part 1, you will have to perform grid search or manually find values for the hyperparameter block sizes (`BLOCK_M`, `BLOCK_N`, `BLOCK_K`). We have provided parameters that should result in you achieving at least 1x speedup, but you will have to search for different block sizes to achieve better speedup.
+To achieve full credit on part 1, you will have to perform grid search or manually find values for the hyperparameter block sizes (`BLOCK_M`, `BLOCK_N`, `BLOCK_K`). We have provided parameters that should result in you achieving around 0.9-1x speedup, but you will have to search for different block sizes to achieve better speedup.
 
 ### Part 1 Grading
 This entire section combined will be 40 points total. We will grade you on completion of each subpart, as well as overall performance. We provide a list of thresholds below for speedup and how many points you will get for each speedup multiplier with respect to the reference PyTorch implementation provided in `reference_matmul` in the notebook.
