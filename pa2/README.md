@@ -229,6 +229,8 @@ Discuss the time difference between your implementation and the MPI one, and giv
 If your implementation is fast (within 150% time consumption of MPI version), you can get a bonus (+2.5 pts for each function)!
 If your implementation is as fast as the MPI implementation (within 105% time consumption of MPI version), you can get a bonus (+5 pts for each function)!
 
+Put your discussion (2-3 sentences) in the file discussion2-1.txt.
+
 ### 2.2 Data Split for Data Parallel Training (5 pts)
 
 For this part, your task is to implement the `split_train` function in `data/data_parallel_preprocess.py`.
