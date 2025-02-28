@@ -20,7 +20,7 @@ def get_optimal_N_D_from_cost(cost_budget):
         N: Optimal total model parameters (in absolute numbers)
         D: Optimal number of training tokens (in absolute numbers)
         training_budget_flops: Effective total training FLOPs (in FLOPs)
-        best_gpu: name of the selected GPU
+        best_gpu: name of the selected GPU (one of 'A100', 'V100', 'T4')
     """
     #TODO you code here
 
