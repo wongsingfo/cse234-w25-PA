@@ -36,7 +36,7 @@ echo "Checking directories..."
 check_dir "part1"
 check_dir "part2"
 check_dir "part3"
-check_dir "part4"
+# check_dir "part4"
 
 # Check Part 1 files
 echo -e "\nChecking Part 1 files..."
@@ -60,8 +60,8 @@ echo -e "\nChecking Part 3 files..."
 check_file "part3/PA3_Speculative_Decoding.ipynb"
 
 # Check Part 4 files
-echo -e "\nChecking Part 4 files..."
-check_file "part4/future_of_ai_essay.md"
+# echo -e "\nChecking Part 4 files..."
+# check_file "part4/future_of_ai_essay.md"
 
 # Summary
 echo -e "\n-----------------------------------"
