@@ -53,6 +53,7 @@ check_file "part2/model_training_cost_analysis.py"
 check_file "part2/llama_7b_config.json"
 check_file "part2/my_model_config.json"
 check_file "part2/deepseek_v3_config.json"
+check_file "part2/moe.md"
 
 # Check Part 3 files
 echo -e "\nChecking Part 3 files..."
