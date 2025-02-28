@@ -99,7 +99,7 @@ After getting optimal model size, design your own model architecture and create 
 
 Now let's work on a new popular model: `DeepSeek-V3`. The configuration of this model is provided in the file `deepseek_v3_config.json`. Can you use your previous function to analyze this model? 
 
-If not, write a new function `model_training_cost_analysis_deepseek` to analyze the cost of `DeepSeek-V3`. Based on your analysis, give some advantages of MoE models. 
+If not, write a new function `model_training_cost_analysis_deepseek` to analyze the cost of `DeepSeek-V3`. Based on your analysis, give some advantages of MoE models (submitted as a Markdown file named part2/moe.md). 
 
 Just a reference: Deepseek *claims* that they can train such a good model using 5 million dollar. 
 
