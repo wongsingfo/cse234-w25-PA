@@ -7,8 +7,9 @@ Remember, you have 5 late days in total for all PAs.
 Academic integrity is key! You may discuss with friends, but do not blatantly cheat and copy off other people for this assignment.
 
 
-### **Important** 
-This assignment must be completed individually, instead of in groups.
+### **Collaboration** 
+- You can collborate on Part 1, 2 and 3. 
+- You need to finish Part 4 individually, instead of in groups.
 
 ## How to Submit Your Homework (Important!)
 
@@ -100,9 +101,7 @@ Now let's work on a new popular model: `DeepSeek-V3`. The configuration of this 
 
 If not, write a new function `model_training_cost_analysis_deepseek` to analyze the cost of `DeepSeek-V3`. Based on your analysis, give some advantages of MoE models. 
 
-
-
-
+Just a reference: Deepseek *claims* that they can train such a good model using 5 million dollar. 
 
 
 ## Part 3: Speculative Decoding
