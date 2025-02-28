@@ -1,6 +1,6 @@
 # CSE 234 Programming Assignment 3
 
-Hi everyone, welcome to PA 3 of CSE234 WINTER 2025! We very much recommend you to start early on this assignment. The assignment is due Tuesday, March 20th, 2025 at 11:59 pm.
+Hi everyone, welcome to PA 3 of CSE234 WINTER 2025! We very much recommend you to start early on this assignment. The assignment is due Thursday, March 20th, 2025 at 11:59 pm PST.
 
 Remember, you have 5 late days in total for all PAs.
 
