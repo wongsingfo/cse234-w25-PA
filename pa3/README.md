@@ -189,7 +189,7 @@ You can choose one of the following statements as your conviction. Alternatively
 
 **Requirements:**
 - Essay must be approximately 500 words (±10%)
-- Must be submitted as a Markdown file named `part4/future_of_ai_essay.md`
+- Submit this separately as a PDF to gradescope under the assignment PA3 - Essay
 - Must include specific, time-bound predictions (e.g., "NVIDIA's data center revenue will decline by X% in Q3 2025 because...")
 - Cite the sources you used in the essay to support your arguments.
 
