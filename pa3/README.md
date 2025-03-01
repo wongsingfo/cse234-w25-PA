@@ -20,7 +20,7 @@ make handin.tar
 Then you will see a `handin.tar` file under your root directory, please go to Gradescope and submit the tar.
 
 
-## Part 1: Mixture of Experts
+## Part 1: Mixture of Experts (50 points)
 
 Your first task is to implement an Mixture of Expert (MoE) model with two different variants of communication patterns for the MoE layer: using tensor parallel (TP) and expert parallel (EP). 
 
@@ -51,7 +51,7 @@ Each process holds a subset of experts in its entirety. At expert forward pass, 
 
 
 
-## Part 2: Scaling Laws and Training Cost Analysis
+## Part 2: Scaling Laws and Training Cost Analysis (30 points + 25 points extra)
 
 Your second task would be analyze the training cost of Llama-7B. You will be asked to estimate the number of model parameters and the amount of flops and memory required for training. In addition, you will also have the chance to design your optimal model training schema given a scaling law and compute budget.
 
@@ -104,7 +104,7 @@ If not, write a new function `model_training_cost_analysis_deepseek` to analyze 
 Just a reference: Deepseek *claims* that they can train such a good model using 5 million dollar. 
 
 
-## Part 3: Speculative Decoding
+## Part 3: Speculative Decoding (50 points + 15 extra)
 
 ### Overview
 In this assignment, you will implement and optimize a speculative decoding algorithm for language models. Speculative decoding is a technique that accelerates text generation by using a smaller, faster "draft" model to propose tokens that a larger "target" model then verifies, potentially reducing the number of expensive forward passes needed during generation.
