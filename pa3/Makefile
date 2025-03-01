@@ -1,4 +1,4 @@
-FILES= part1/ part2/ part3/ part4/
+FILES= part1/ part2/ part3/
 
 .PHONY: check clean all
 
