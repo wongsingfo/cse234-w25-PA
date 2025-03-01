@@ -8,7 +8,7 @@ Academic integrity is key! You may discuss with friends, but do not blatantly ch
 
 
 ### **Collaboration** 
-- You can collborate on Part 1, 2 and 3. 
+- You can collaborate on Part 1, 2 and 3 (with up to 3 people).
 - You need to finish Part 4 individually, instead of in groups.
 
 ## How to Submit Your Homework (Important!)
@@ -157,6 +157,8 @@ Your submission should include:
   - Optimizations you implemented
   - Performance results and analysis
   - Any challenges encountered and how you addressed them
+  
+**PLEASE run your Jupyter notebook with your best result before submission.**
 
 ## Part 4: What is the future of LLM and AI?
 
