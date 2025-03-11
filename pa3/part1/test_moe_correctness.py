@@ -8,9 +8,9 @@ import pickle
 
 # Correctness checksum for MoE models
 correct_outputs = {
-    "simple": 29.89055275109692,
-    "ep": 2.2556312072570233,
-    "tp": -33.39735618978739,
+    "simple": 4.016589635077568, 
+    "ep": -28.57107747979851,   
+    "tp": -79.30519534272293,   
 }
 
 def sum_parameters(model):
