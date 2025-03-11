@@ -35,4 +35,3 @@ def rng_context(name):
 register_rng("expert")
 register_rng("router")
 register_rng("testing")
-register_rng("expert_with_rank")

@@ -201,18 +201,20 @@ def run_moe(
     return dict(
         correctness_output=correctness_output,
     )
+
+batch_size = 4
+feature_dim = 8
+hidden_dim = 32
+output_dim = 16
+num_experts = 4
+topk = 2
+
     
 def test_simple_moe_correctness():
     # Register a different RNG for each process
     # This way, if necessary, different process will initialize different experts
     rank = mpi.get_rank()
     register_rng("expert_with_rank", np.random.RandomState(rank + 100))
-    batch_size = 10
-    feature_dim = 10
-    hidden_dim = 10
-    output_dim = 10
-    num_experts = 10
-    topk = 10
     result = run_moe(
         "simple",
         batch_size=batch_size,
@@ -224,39 +226,27 @@ def test_simple_moe_correctness():
     )
     correctness_output = result["correctness_output"]
     if abs(correctness_output.sum() - correct_outputs["simple"]) <= 2:
-        print("Simple MoE test passed ✅")
+        print("Simple MoE test passed")
     else:
-        print(f"Simple MoE test failed ❌: {correctness_output.sum() = } != {correct_outputs['simple'] = }. SimpleMoE correctness checksum should be consistent.")
+        print(f"Simple MoE test failed: {correctness_output.sum() = } != {correct_outputs['simple'] = }. SimpleMoE correctness checksum should be consistent.")
     return 
 
 def test_ep_moe_correctness():
-    batch_size = 10
-    feature_dim = 10
-    hidden_dim = 10
-    output_dim = 10
-    num_experts = 10
-    topk = 10
     result = run_moe("ep", batch_size=batch_size, feature_dim=feature_dim, hidden_dim=hidden_dim, output_dim=output_dim, num_experts=num_experts, topk=topk)
     correctness_output = result["correctness_output"]
     if abs(correctness_output.sum() - correct_outputs["ep"]) <= 2:
-        print("Expert Parallel MoE test passed ✅")
+        print("Expert Parallel MoE test passed")
     else:
-        print(f"Expert Parallel MoE test failed ❌: {correctness_output.sum() = } != {correct_outputs['ep'] = }. It is possible that some parameters are not initialized correctly, or your implementation is incorrect.")
+        print(f"Expert Parallel MoE test failed: {correctness_output.sum() = } != {correct_outputs['ep'] = }. It is possible that some parameters are not initialized correctly, or your implementation is incorrect.")
     return
 
 def test_tp_moe_correctness():
-    batch_size = 10
-    feature_dim = 10
-    hidden_dim = 10
-    output_dim = 10
-    num_experts = 10
-    topk = 10
     result = run_moe("tp", batch_size=batch_size, feature_dim=feature_dim, hidden_dim=hidden_dim, output_dim=output_dim, num_experts=num_experts, topk=topk)
     correctness_output = result["correctness_output"]
     if abs(correctness_output.sum() - correct_outputs["tp"]) <= 2:
-        print("Tensor Parallel MoE test passed ✅")
+        print("Tensor Parallel MoE test passed")
     else:
-        print(f"Tensor Parallel MoE test failed ❌: {correctness_output.sum() = } != {correct_outputs['tp'] = }. It is possible that some parameters are not initialized correctly, or your implementation is incorrect.")
+        print(f"Tensor Parallel MoE test failed: {correctness_output.sum() = } != {correct_outputs['tp'] = }. It is possible that some parameters are not initialized correctly, or your implementation is incorrect.")
     return
 
 if __name__ == "__main__":
