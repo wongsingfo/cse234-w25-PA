@@ -28,6 +28,8 @@ def rng_context(name):
     global _registered_rngs
     global current_rng
     prev_context = current_rng
+    if name not in _registered_rngs:
+        register_rng(name)
     current_rng = _registered_rngs[name]
     yield
     current_rng = prev_context
