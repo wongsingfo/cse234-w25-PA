@@ -10,8 +10,9 @@ def check_evaluator_output(
     evaluator: ad.Evaluator,
     input_values: Dict[ad.Node, torch.Tensor],
     expected_outputs: List[torch.Tensor],
+    print_activations: bool = False,
 ) -> None:
-    output_values = evaluator.run(input_values)
+    output_values = evaluator.run(input_values, print_activations)
     assert len(output_values) == len(expected_outputs)
     for output_val, expected_val in zip(output_values, expected_outputs):
         print(repr(output_val))
@@ -164,7 +165,8 @@ def test_layernorm():
                 [1.2248, -2.4495,  1.2246],
                 [2.0412, -4.0825, 2.0413]
             ], dtype=torch.float32)
-        ]
+        ],
+        print_activations=True
     )
 
 def test_relu():
@@ -271,6 +273,40 @@ def test_power():
         expected_outputs=[torch.tensor([[2.0, 4.0], [6.0, 8.0]])]
     )
 
+def test_mean_keepdim():
+    x = ad.Variable("x")
+    y = ad.mean(x, dim=(-1,), keepdim=True)
+    y_grad = ad.Variable("y_grad")
+    x_grad = y.op.gradient(y, y_grad)[0]
+    evaluator = ad.Evaluator(eval_nodes=[x_grad])
+
+    x_val = torch.tensor([[1.0, 2.0, 3.0, 4.0], [3.0, 4.0, 5.0, 6.0]])
+    y_grad_val = torch.tensor([[1.0], [1.0]])
+
+    check_evaluator_output(
+        evaluator,
+        input_values={x: x_val, y_grad: y_grad_val},
+        expected_outputs=[torch.tensor([[0.25, 0.25, 0.25, 0.25], 
+                                        [0.25, 0.25, 0.25, 0.25]])]
+    )
+
+def test_mean_no_keepdim():
+    x = ad.Variable("x")
+    y = ad.mean(x, dim=(-1,), keepdim=False)
+    y_grad = ad.Variable("y_grad")
+    x_grad = y.op.gradient(y, y_grad)[0]
+    evaluator = ad.Evaluator(eval_nodes=[x_grad])
+    
+    x_val = torch.tensor([[1.0, 2.0, 3.0, 4.0], [3.0, 4.0, 5.0, 6.0]])
+    y_grad_val = torch.tensor([1.0, 1.0])
+
+    check_evaluator_output(
+        evaluator,
+        input_values={x: x_val, y_grad: y_grad_val},
+        expected_outputs=[torch.tensor([[0.25, 0.25, 0.25, 0.25],
+                                        [0.25, 0.25, 0.25, 0.25]])]
+    )
+
 if __name__ == "__main__":
     test_mul()
     test_div()
@@ -284,4 +320,4 @@ if __name__ == "__main__":
     test_broadcast()
     test_sqrt()
     test_power()
-
+    test_mean_keepdim()
