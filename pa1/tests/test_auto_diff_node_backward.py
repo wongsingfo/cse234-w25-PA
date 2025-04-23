@@ -165,8 +165,7 @@ def test_layernorm():
                 [1.2248, -2.4495,  1.2246],
                 [2.0412, -4.0825, 2.0413]
             ], dtype=torch.float32)
-        ],
-        print_activations=True
+        ]
     )
 
 def test_relu():

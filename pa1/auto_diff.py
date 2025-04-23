@@ -164,6 +164,7 @@ class AddOp(Op):
     def compute(self, node: Node, input_values: List[torch.Tensor]) -> torch.Tensor:
         """Return the element-wise addition of input values."""
         assert len(input_values) == 2
+        assert input_values[0].shape == input_values[1].shape
         return input_values[0] + input_values[1]
 
     def gradient(self, node: Node, output_grad: Node) -> List[Node]:
@@ -205,6 +206,7 @@ class MulOp(Op):
     def compute(self, node: Node, input_values: List[torch.Tensor]) -> torch.Tensor:
         """Return the element-wise multiplication of input values."""
         assert len(input_values) == 2
+        assert input_values[0].shape == input_values[1].shape
         return input_values[0] * input_values[1]
 
     def gradient(self, node: Node, output_grad: Node) -> List[Node]:
@@ -323,9 +325,9 @@ class SumOp(Op):
         keepdim = node.attrs["keepdim"]
 
         if keepdim:
-            return [output_grad]
+            return [expand_as_3d(output_grad, node.inputs[0])]
         else:
-            reshape_grad = expand_as_3d(output_grad, node.inputs[0])
+            reshape_grad = expand_as_3d(output_grad, node.inputs[0], dim)
             return [reshape_grad]
 
 class ExpandAsOp(Op):
@@ -511,13 +513,13 @@ class TransposeOp(Op):
         - transpose(x, 1, 0) swaps first two dimensions
         """
         assert len(input_values) == 1
-        return input_values[0].transpose(node.dim0, node.attrs["dim1"])
+        return input_values[0].transpose(node.dim0, node.dim1)
 
     def gradient(self, node: Node, output_grad: Node) -> List[Node]:
         """Given gradient of transpose node, return partial adjoint to input."""
         # For transpose operation f(x, dim0, dim1) = x.transpose(dim0, dim1), the gradients are:
         # df/dx = transpose(output_grad, dim1, dim0)
-        return [transpose(output_grad, node.attrs["dim1"], node.attrs["dim0"])]
+        return [transpose(output_grad, node.dim1, node.dim0)]
 
 class MatMulOp(Op):
     """Matrix multiplication op of two nodes."""
@@ -616,6 +618,7 @@ class SoftmaxOp(Op):
         f = softmax(x, node.dim)
         # s = sum_j (dL/df_j * f_j)
         s = sum_op(output_grad * f, dim=node.dim, keepdim=True)
+        s = expand_as(s, x)
         return [f * (output_grad - s)]
 
 
@@ -656,9 +659,11 @@ class LayerNormOp(Op):
         dim = tuple([-i for i in range(1, len(normalized_shape) + 1)])
 
         shift = mean(x, dim, keepdim=True)
+        shift = expand_as(shift, x)
         x_shift = x - shift
         var = mean(power(x_shift, 2), dim, keepdim=True)
         std = sqrt(var + node.eps)
+        std = expand_as(std, x)
         y = x_shift / std
 
         # first term
@@ -666,9 +671,10 @@ class LayerNormOp(Op):
 
         # second term
         t2 = mean(output_grad, dim, keepdim=True)
+        t2 = expand_as(t2, x)
 
         # third term
-        t3 = y * mean(output_grad * y, dim, keepdim=True)
+        t3 = y * expand_as(mean(output_grad * y, dim, keepdim=True), y)
 
         result = (t1 - t2 - t3) / std
         return [result]
@@ -759,7 +765,7 @@ class MeanOp(Op):
         input_count = sum_op(ones_like(node.inputs[0]), dim=None)
         output_count = sum_op(ones_like(output_grad), dim=None)
         H_ = output_count / input_count
-        grad = output_grad * H_
+        grad = output_grad * expand_as(H_, output_grad)
 
         if node.keepdim:
             return [expand_as(grad, node.inputs[0])]
@@ -859,7 +865,8 @@ class Evaluator:
         self.eval_nodes = eval_nodes
 
     def run(self, input_values: Dict[Node, torch.Tensor],
-            print_activations: bool = False) -> List[torch.Tensor]:
+            print_activations: bool = False,
+            print_shapes: bool = False) -> List[torch.Tensor]:
         """Computes values of nodes in `eval_nodes` field with
         the computational graph input values given by the `input_values` dict.
 
@@ -890,9 +897,13 @@ class Evaluator:
                 activations[node] = input_values[node]
             else:
                 inputs = [activations[input_node] for input_node in node.inputs]
+                if print_shapes:
+                    print(f"> Computing {node} with inputs: {[input.shape for input in inputs]}")
                 if print_activations:
                     print(f"> Computing {node} with inputs:\n{inputs}")
                 activations[node] = node.op.compute(node, inputs)
+                if print_shapes:
+                    print(f"< Computed {node} with output: {activations[node].shape}")
                 if print_activations:
                     print(f"< Computed {node} with output:\n{activations[node]}")
 
