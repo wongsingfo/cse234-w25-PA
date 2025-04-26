@@ -36,7 +36,7 @@ def test_matmul_layernorm_forward():
     fused_y = matmul_layernorm(x1, x2, normalized_shape=[3])
     separate_y = ad.layernorm(
         ad.matmul(x1, x2),
-        normalized_shape=[3]
+        normalized_shape=[4]
     )
 
     # Test input values
@@ -60,7 +60,7 @@ def test_matmul_layernorm_backward():
     fused_y = matmul_layernorm(x1, x2, normalized_shape=[3])
     separate_y = ad.layernorm(
         ad.matmul(x1, x2),
-        normalized_shape=[3]
+        normalized_shape=[4]
     )
     
     y_grad = ad.Variable("y_grad")
