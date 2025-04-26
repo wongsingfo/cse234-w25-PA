@@ -42,4 +42,24 @@ def split_data(
         - Do not shuffle the data indices as shuffling will be done later.
     """
 
-    #TODO: Your code here
+    # Calculate the number of samples per DP group
+    samples_per_dp = x_train.shape[0] // dp_size
+    assert x_train.shape[0] % dp_size == 0, "Data length must be divisible by dp_size"
+
+    """Examples:
+         MP0     MP1
+    DP0  rank 0  rank 1
+    DP1  rank 2  rank 3
+    DP2  rank 4  rank 5
+    DP3  rank 6  rank 7
+    """
+
+    # Calculate the starting and ending indices for the DP group
+    data_start_idx = (rank // mp_size) * samples_per_dp
+    data_end_idx = data_start_idx + samples_per_dp
+
+    split_x_train = x_train[data_start_idx:data_end_idx]
+    split_y_train = y_train[data_start_idx:data_end_idx]
+
+    return split_x_train, split_y_train
+
