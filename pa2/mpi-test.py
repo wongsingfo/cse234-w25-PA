@@ -37,7 +37,7 @@ if __name__ == "__main__":
         if rank == 0:
             print("Allreduce: " + str(rr))
     
-    if args.test_case == "myallreduce":
+    elif args.test_case == "myallreduce":
 
         num_runs = 100
 
