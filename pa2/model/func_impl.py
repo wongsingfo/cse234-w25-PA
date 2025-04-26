@@ -49,7 +49,31 @@ def get_info(
     part_out_dim : int
         The partitioned output dimension for the FC layer.
     """
-    #TODO: Your code here
+    # Calculate model parallel and data parallel indices
+    dp_idx = rank // mp_size
+    mp_idx = rank % mp_size
+    
+    # Create model parallel communicator (processes with same dp_idx)
+    # Each model parallel group has mp_size processes
+    mp_comm = comm.Split(color=mp_color, key=mp_idx)
+    
+    # Create data parallel communicator (processes with same mp_idx)
+    # Each data parallel group has dp_size processes
+    dp_color = mp_idx
+    dp_comm = comm.Split(color=dp_color, key=dp_idx)
+    
+    # Partition dimensions based on the FC layer type
+    if fc_layer in ['fc_q', 'fc_k', 'fc_v']:
+        # For fc_q, fc_k, fc_v, partition along output dimension
+        part_in_dim = in_dim
+        part_out_dim = out_dim // mp_size
+    elif fc_layer == 'fc_o':
+        # For fc_o, partition along input dimension
+        part_in_dim = in_dim // mp_size
+        part_out_dim = out_dim
+    else:
+        raise ValueError(f"Unsupported FC layer type: {fc_layer}")
+    
     return mp_idx, dp_idx, mp_comm, dp_comm, part_in_dim, part_out_dim
 
 def naive_collect_forward_input(
@@ -65,7 +89,14 @@ def naive_collect_forward_input(
     After gathering, the full input should have shape:
       (batch_size, seq_length, part_in_dim * mp_size)
     """
-    #TODO: Your code here
+    
+    # Use allgather to collect slices from all processes
+    # This directly returns the gathered data as a list of arrays
+    gathered_data = mp_comm.allgather(x)
+    
+    # Concatenate along the last dimension (feature dimension)
+    collected_x = np.concatenate(gathered_data, axis=2)
+    
     return collected_x
 
 
@@ -82,8 +113,15 @@ def naive_collect_forward_output(
     After gathering, the full output should have shape:
       (batch_size, seq_length, part_out_dim * mp_size)
     """
-    #TODO: Your code here
+    # Use allgather to collect slices from all processes
+    # This directly returns the gathered data as a list of arrays
+    gathered_data = mp_comm.allgather(out)
+    
+    # Concatenate along the last dimension (feature dimension)
+    collected_out = np.concatenate(gathered_data, axis=2)
+
     return collected_out
+    
 
 def naive_collect_backward_output(
     output_grad: np.ndarray,
@@ -115,8 +153,20 @@ def naive_collect_backward_output(
         The local output gradient for this MP node with shape 
         (batch_size, seq_length, out_dim // mp_size).
     """
-    #TODO: Your code here
-
+    # Get the dimensions of the input tensor
+    batch_size, seq_length, out_dim = output_grad.shape
+    
+    # Calculate the part_out_dim for each MP node
+    part_out_dim = out_dim // mp_size
+    
+    # Calculate the start and end indices for the slice
+    start_idx = mp_group_idx * part_out_dim
+    end_idx = (mp_group_idx + 1) * part_out_dim
+    
+    # Extract the slice corresponding to this MP node
+    collected_output_grad = output_grad[:, :, start_idx:end_idx]
+    
+    return collected_output_grad
 
 def naive_collect_backward_x(
     grad_x: np.ndarray,
@@ -150,4 +200,30 @@ def naive_collect_backward_x(
         The reduced and scattered grad_x with shape 
         (batch_size, seq_length, in_dim // mp_size).
     """
-    #TODO: Your code here
+    # Get the dimensions of the local gradient
+    batch_size, seq_length, in_dim = grad_x.shape
+    
+    # Calculate the part_in_dim for each MP node
+    part_in_dim = in_dim // mp_size
+    
+    # Split the input tensor into chunks along the last dimension
+    # Each process will own one chunk after the reduce-scatter operation
+    chunks = np.zeros((mp_size, batch_size, seq_length, part_in_dim), dtype=grad_x.dtype)
+    
+    # Slice the input tensor into chunks for reduce-scatter
+    for i in range(mp_size):
+        start_idx = i * part_in_dim
+        end_idx = (i + 1) * part_in_dim
+        chunks[i] = grad_x[:, :, start_idx:end_idx]
+    
+    # Create buffer for the result
+    result = np.zeros((batch_size, seq_length, part_in_dim), dtype=grad_x.dtype)
+    
+    # Use reduce_scatter_block to perform the reduce-scatter operation
+    # This will sum corresponding chunks across processes and distribute the results
+    mp_comm.Reduce_scatter(
+        chunks, result, op=MPI.SUM
+    )
+    
+    return result
+    
