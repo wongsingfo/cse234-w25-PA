@@ -10,3 +10,8 @@ pytest-mpi==0.6
 pytest-reportlog==0.4.0
 PyYAML==6.0.1
 tomli==2.0.1
+
+# For part 3
+transformers==4.51.3
+ipywidgets
+jupyter
